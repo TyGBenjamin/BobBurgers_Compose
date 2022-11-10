@@ -1,5 +1,6 @@
 package com.example.bobburgers.model.dto
 
+@kotlinx.serialization.Serializable
 data class CharacterResponse(
-    val characters:List<CharacterDTO>
+    val characters:Array<List<CharacterDTO>>
 )

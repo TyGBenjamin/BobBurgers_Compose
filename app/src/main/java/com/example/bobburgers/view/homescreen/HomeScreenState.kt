@@ -1,6 +1,6 @@
 package com.example.bobburgers.view.homescreen
 
-import com.example.bobburgers.util.Resource
+import com.example.bobburgers.model.entity.Bobcharacter
 
 //data class HomeScreenState(
 //    val isLoading: Boolean = false,
@@ -10,7 +10,7 @@ import com.example.bobburgers.util.Resource
 
 data class HomeScreenState(
     val isLoading: Boolean = false,
-    val characters: List<com.example.bobburgers.model.entity.Character> = listOf(),
+    val characters: List<Bobcharacter> = listOf(),
     val error: String = ""
 )
 

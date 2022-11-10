@@ -1,16 +1,16 @@
-package com.example.bobburgers.model.dto
+package com.example.bobburgers.model.entity
 
-@kotlinx.serialization.Serializable
-data class CharacterDTO(
+data class Bobcharacter(
     val firstEpisode: String,
-    val gender: String,
+    val gender: String ="",
     val hairColor: String,
     val id: Int,
     val image: String,
     val name: String,
     val occupation: String,
-    val relatives: List<RelativeDTO>,
+    val relatives: List<Relative>,
     val url: String,
     val voicedBy: String,
     val wikiUrl: String
 )
+

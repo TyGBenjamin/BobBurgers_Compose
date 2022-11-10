@@ -18,19 +18,19 @@ import com.example.bobburgers.CharCard
 
 @Composable
 fun HomeScreen(
-    characters: List<com.example.bobburgers.model.entity.Character>,
-    cardClicked: (com.example.bobburgers.model.entity.Character) -> Unit
+    homeScreenState: HomeScreenState,
+    cardClicked: (com.example.bobburgers.model.entity.Bobcharacter) -> Unit
 ) {
     LazyColumn(modifier = Modifier.padding(5.dp)) {
-        items(items = characters, key = { chars -> chars.id }) { char ->
-            CharCard(character = char)
+        items(items = homeScreenState.characters, key = { chars -> chars.id }) { char ->
+            CharCard2(character = char)
         }
     }
 }
 
 
 @Composable
-fun CharCard2(character: com.example.bobburgers.model.entity.Character) {
+fun CharCard2(character: com.example.bobburgers.model.entity.Bobcharacter) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

@@ -22,7 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.example.bobburgers.model.local.RepositoryImpl
+import com.example.bobburgers.model.mapper.character.CharacterMapper
+import com.example.bobburgers.model.remote.BobRepo
 import com.example.bobburgers.model.remote.RetrofitClass
 import com.example.bobburgers.ui.theme.BobBurgersTheme
 import com.example.bobburgers.view.homescreen.HomeScreen
@@ -55,15 +56,20 @@ class MainActivity : ComponentActivity() {
 
     private val bobViewModel by viewModels<BobViewModel> {
         val service = RetrofitClass.getApiService()
-        val repo = RepositoryImpl(service)
+        val mapper = CharacterMapper()
+        val repo = BobRepo(service, mapper)
         VMlFactory(repo)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bobViewModel.getCharacters()
+        println("GET CHARS ${bobViewModel.getCharacters()}")
+//        println(list)
+        println("HERE")
         setContent {
             val homeState by bobViewModel.homeState.collectAsState()
+            println(homeState)
+
             BobBurgersTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -79,7 +85,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BobBurgersApp(characters: HomeScreenState){
-    HomeScreen(characters.characters, cardClicked = {
+    HomeScreen(characters, cardClicked = {
         println("card clicked: {$}")
     })
 }
@@ -101,7 +107,7 @@ fun DefaultPreview() {
 
 
 @Composable
-fun CharCard(character: com.example.bobburgers.model.entity.Character) {
+fun CharCard(character: com.example.bobburgers.model.entity.Bobcharacter) {
     Card(modifier = Modifier
         .fillMaxWidth()
         .padding(5.dp)) {
