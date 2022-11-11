@@ -12,13 +12,10 @@ import retrofit2.create
 @OptIn(ExperimentalSerializationApi::class)
 object RetrofitClass {
     private const val CHAR_LIST =  "characters/"
-    private const val BASE_URL = "https://bobsburgers-api.herokuapp.com/characters/"
+    private const val BASE_URL = "https://bobsburgers-api.herokuapp.com/"
 
-    private val mediaType = "application/gson".toMediaType()
+    private val mediaType = "application/json".toMediaType()
 
-    private val json = Json {
-        ignoreUnknownKeys = true
-    }
 
 
     private val retrofit: Retrofit = Retrofit.Builder()

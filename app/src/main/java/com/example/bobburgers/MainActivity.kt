@@ -21,7 +21,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.bobburgers.model.mapper.RelativeMapper
 import com.example.bobburgers.model.mapper.character.CharacterMapper
 import com.example.bobburgers.model.remote.BobRepo
 import com.example.bobburgers.model.remote.RetrofitClass
@@ -29,8 +33,6 @@ import com.example.bobburgers.ui.theme.BobBurgersTheme
 import com.example.bobburgers.view.homescreen.HomeScreen
 import com.example.bobburgers.view.homescreen.HomeScreenState
 import com.example.bobburgers.viewmodel.BobViewModel
-import com.example.bobburgers.viewmodel.VMlFactory
-
 
 //
 //class MainActivity : ComponentActivity() {
@@ -56,19 +58,21 @@ class MainActivity : ComponentActivity() {
 
     private val bobViewModel by viewModels<BobViewModel> {
         val service = RetrofitClass.getApiService()
-        val mapper = CharacterMapper()
+        val mapper = CharacterMapper(RelativeMapper())
         val repo = BobRepo(service, mapper)
-        VMlFactory(repo)
+        BobViewModel.VMlFactory(repo)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        println("GET CHARS ${bobViewModel.getCharacters()}")
 //        println(list)
         println("HERE")
         setContent {
+            val result = bobViewModel.getCharacters()
             val homeState by bobViewModel.homeState.collectAsState()
-            println(homeState)
+            println("HOMESCREEN STATE : $homeState")
+            println(result)
+
 
             BobBurgersTheme {
                 // A surface container using the 'background' color from the theme
@@ -76,13 +80,25 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    BobBurgersApp(homeState)
+                    Navigation(homeState)
                 }
             }
         }
     }
 }
 
+@Composable
+fun Navigation(homeState:HomeScreenState) {
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = "home_screen") {
+        composable("characters/{id}") {
+        }
+        composable("home_screen") {
+            BobBurgersApp(homeState)
+
+        }
+    }
+}
 @Composable
 fun BobBurgersApp(characters: HomeScreenState){
     HomeScreen(characters, cardClicked = {

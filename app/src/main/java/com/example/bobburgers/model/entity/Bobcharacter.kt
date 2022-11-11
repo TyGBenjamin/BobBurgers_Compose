@@ -1,8 +1,11 @@
 package com.example.bobburgers.model.entity
 
+import com.example.bobburgers.model.dto.RelativeDTO
+
 data class Bobcharacter(
+    val age: String,
     val firstEpisode: String,
-    val gender: String ="",
+    val gender: String,
     val hairColor: String,
     val id: Int,
     val image: String,
@@ -12,5 +15,6 @@ data class Bobcharacter(
     val url: String,
     val voicedBy: String,
     val wikiUrl: String
+
 )
 

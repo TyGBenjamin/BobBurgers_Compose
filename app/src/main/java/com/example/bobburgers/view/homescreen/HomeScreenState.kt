@@ -10,7 +10,7 @@ import com.example.bobburgers.model.entity.Bobcharacter
 
 data class HomeScreenState(
     val isLoading: Boolean = false,
-    val characters: List<Bobcharacter> = listOf(),
+    val characters: List<Bobcharacter>,
     val error: String = ""
 )
 

@@ -11,24 +11,25 @@ import com.example.bobburgers.model.mapper.RelativeMapper
  * @constructor Create empty Student mapper.
  */
 
-class CharacterMapper : Mapper<CharacterDTO, Bobcharacter> {
-    private val relativeMapper by lazy {RelativeMapper()}
-
-    override fun invoke(dto: CharacterDTO): Bobcharacter =
-        with(dto) {
-            val relativeList = relatives.map { it.toRelative(relativeMapper) }
+class CharacterMapper(private val relativeMapper: RelativeMapper):
+    Mapper<CharacterDTO, Bobcharacter> {
+    override fun invoke(dto: CharacterDTO): Bobcharacter {
+        return with(dto) {
             Bobcharacter(
-                image,
-                name,
-                occupation,
-                id,
-                url,
-                wikiUrl,
-                hairColor,
-                relativeList,
-                voicedBy,
-                gender,
-                firstEpisode
+                age = age ?: "",
+                firstEpisode = firstEpisode ?: "",
+                gender = gender ?: "",
+                hairColor = hairColor ?: "",
+                id = id ?: 999,
+                image = image ?: "",
+                name = name ?: "",
+                occupation = occupation ?: "",
+                relatives =  relatives?.map { relativeMapper(it) } ?: emptyList(),
+                url = url ?: "",
+                voicedBy = voicedBy ?: "",
+                wikiUrl = wikiUrl ?: ""
             )
         }
+    }
 }
+
