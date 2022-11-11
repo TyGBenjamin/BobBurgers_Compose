@@ -1,6 +1,7 @@
 package com.example.bobburgers.view.homescreen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,27 +14,30 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.bobburgers.CharCard
 
 @Composable
 fun HomeScreen(
     homeScreenState: HomeScreenState,
-    cardClicked: (com.example.bobburgers.model.entity.Bobcharacter) -> Unit
+    navController: NavController
 ) {
     LazyColumn(modifier = Modifier.padding(5.dp)) {
         items(items = homeScreenState.characters, key = { chars -> chars.id }) { char ->
-            CharCard2(character = char)
+            CharCard2(character = char, navigate = { navController.navigate("characters/${char.id}") })
         }
     }
 }
 
 
 @Composable
-fun CharCard2(character: com.example.bobburgers.model.entity.Bobcharacter) {
+fun CharCard2(character: com.example.bobburgers.model.entity.Bobcharacter, navigate: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { navigate()
+            println("Card has been CLICKED")}
             .padding(5.dp)
     ) {
         Row(
