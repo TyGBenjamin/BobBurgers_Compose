@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -21,109 +22,140 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.bobburgers.model.local.RepositoryImpl
+import com.example.bobburgers.model.entity.Bobcharacter
+import com.example.bobburgers.model.mapper.RelativeMapper
+import com.example.bobburgers.model.mapper.character.CharacterMapper
+import com.example.bobburgers.model.remote.BobRepo
 import com.example.bobburgers.model.remote.RetrofitClass
 import com.example.bobburgers.ui.theme.BobBurgersTheme
+import com.example.bobburgers.util.Constants
 import com.example.bobburgers.view.homescreen.HomeScreen
 import com.example.bobburgers.view.homescreen.HomeScreenState
+import com.example.bobburgers.view.homescreen.ProgressIndicator
 import com.example.bobburgers.viewmodel.BobViewModel
-import com.example.bobburgers.viewmodel.VMlFactory
 
-
-//
-//class MainActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContent {
-//            BobBurgersTheme {
-//                // A surface container using the 'background' color from the theme
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colorScheme.background
-//                ) {
-//                    Greeting("Android")
-//                }
-//            }
-//        }
-//    }
-//}
-
-
-
+/**
+ * Main activity, Main Active View for Holding Our Content.
+ *
+ * @constructor Create empty Main activity
+ */
 class MainActivity : ComponentActivity() {
 
     private val bobViewModel by viewModels<BobViewModel> {
         val service = RetrofitClass.getApiService()
-        val repo = RepositoryImpl(service)
-        VMlFactory(repo)
+        val mapper = CharacterMapper(RelativeMapper())
+        val repo = BobRepo(service, mapper)
+        BobViewModel.VMlFactory(repo)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bobViewModel.getCharacters()
+//        println(list)
+        println("HERE")
         setContent {
+            val result = bobViewModel.getCharacters()
             val homeState by bobViewModel.homeState.collectAsState()
+            println("HOMESCREEN STATE : $homeState")
+            println(result)
             BobBurgersTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    BobBurgersApp(homeState)
+                    if (homeState.isLoading) {
+                        ProgressIndicator()
+                    } else {
+                        Navigation(homeState)
+                    }
                 }
             }
         }
     }
-}
 
-@Composable
-fun BobBurgersApp(characters: HomeScreenState){
-    HomeScreen(characters.characters, cardClicked = {
-        println("card clicked: {$}")
-    })
-}
-
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    BobBurgersTheme {
-        Greeting("Android")
+    @Composable
+    fun Navigation(homeState: HomeScreenState) {
+        val navController = rememberNavController()
+        NavHost(navController = navController, startDestination = Constants.homeScreen) {
+            composable("characters/{id}") {
+                val id = it.arguments?.getString("id")
+                id?.let { it1 ->
+                    CharCard(
+                        id = it1,
+                        navigate = {},
+                        character = homeState.characters.get(it1.toInt() - 1)
+                    )
+                }
+                if (id != null) {
+                    CharCard(
+                        id = id,
+                        navigate = { navController.navigate(Constants.homeScreen) },
+                        character = homeState.characters[id.toInt() - 1]
+                    )
+                }
+            }
+            composable(Constants.homeScreen) {
+                BobBurgersApp(homeState, navController)
+            }
+        }
     }
-}
 
+    @Composable
+    fun BobBurgersApp(characters: HomeScreenState, navController: NavController) {
+        HomeScreen(characters, navController = navController)
+    }
 
+    @Composable
+    fun Greeting(name: String) {
+        Text(text = "Hello $name!")
+    }
 
-@Composable
-fun CharCard(character: com.example.bobburgers.model.entity.Character) {
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .padding(5.dp)) {
-        Row(
-            modifier =
-            Modifier
+    @Preview(showBackground = true)
+    @Composable
+    fun DefaultPreview() {
+        BobBurgersTheme {
+            Greeting("Android")
+        }
+    }
+
+    @Composable
+    fun CharCard(id: String, navigate: () -> Unit, character: Bobcharacter) {
+        Card(
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    top = 20.dp,
-                    start = 10.dp
-                )
+                .padding(5.dp)
         ) {
-            Image(
-                painter = rememberAsyncImagePainter(character.image),
-                contentDescription = null,
-                modifier = Modifier.size(145.dp)
-            )
-            Column(modifier = Modifier.padding(start = 15.dp, end = 15.dp)) {
-                Text(text = character.name)
-                Text(text = "Job: ${character.occupation}")
-                Text(text = "pronoun: ${character.gender}")
-                Text(text = "First Appeared in: ${character.firstEpisode}")
+            Row(
+                modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = 20.dp,
+                        start = 10.dp
+                    )
+            ) {
+                Image(
+                    painter = rememberAsyncImagePainter(character.image),
+                    contentDescription = null,
+                    modifier = Modifier.size(145.dp)
+                )
+                Column(modifier = Modifier.padding(start = 15.dp, end = 15.dp)) {
+                    Text(text = character.name)
+                    Text(text = "Job: ${character.occupation}")
+                    Text(text = "pronoun: ${character.gender}")
+                    Text(text = "First Appeared in: ${character.firstEpisode}")
+                    Button(onClick = {
+                        navigate()
+                        print(id)
+                    }) {
+                        Text(text = "Home")
+                    }
+                }
             }
         }
     }

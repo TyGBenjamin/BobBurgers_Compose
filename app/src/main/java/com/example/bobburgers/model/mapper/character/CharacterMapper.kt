@@ -1,8 +1,10 @@
 package com.example.bobburgers.model.mapper.character
 
 import com.example.bobburgers.model.dto.CharacterDTO
-import com.example.bobburgers.model.entity.Character
+import com.example.bobburgers.model.entity.Bobcharacter
 import com.example.bobburgers.model.mapper.Mapper
+import com.example.bobburgers.model.mapper.RelativeMapper
+import com.example.bobburgers.util.Constants
 
 /**
  * Card mapper to convert [CardDTO] to [Card] entity.
@@ -10,17 +12,24 @@ import com.example.bobburgers.model.mapper.Mapper
  * @constructor Create empty Student mapper.
  */
 
-class CharacterMapper : Mapper<CharacterDTO, com.example.bobburgers.model.entity.Character> {
-
-    override fun invoke(dto: CharacterDTO): com.example.bobburgers.model.entity.Character =
-        with(dto) {
-            com.example.bobburgers.model.entity.Character(
-                id,
-                firstEpisode,
-                gender,
-                image,
-                name,
-                occupation
+class CharacterMapper(private val relativeMapper: RelativeMapper) :
+    Mapper<CharacterDTO, Bobcharacter> {
+    override fun invoke(dto: CharacterDTO): Bobcharacter {
+        return with(dto) {
+            Bobcharacter(
+                age = age ?: "",
+                firstEpisode = firstEpisode ?: "",
+                gender = gender ?: "",
+                hairColor = hairColor ?: "",
+                id = id ?: Constants.idDefault,
+                image = image ?: "",
+                name = name ?: "",
+                occupation = occupation ?: "",
+                relatives = relatives?.map { relativeMapper(it) } ?: emptyList(),
+                url = url ?: "",
+                voicedBy = voicedBy ?: "",
+                wikiUrl = wikiUrl ?: ""
             )
         }
+    }
 }
