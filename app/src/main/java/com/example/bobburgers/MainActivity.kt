@@ -107,7 +107,7 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun BobBurgersApp(characters: HomeScreenState, navController: NavController) {
-        HomeScreen(characters, navController = navController)
+        HomeScreen(characters, navController)
     }
 
     @Composable
