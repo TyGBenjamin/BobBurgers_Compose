@@ -1,13 +1,24 @@
 package com.example.bobburgers.util
 
-//object Constants {
-//    const val BASE_URL = "https://bobsburgers-api.herokuapp.com/"
-//    const val CHAR_LIST = "characters/"
-//    const val CHAR_DETAIL = "character/{id}"
-//    const val TAG = "Logger"
-//    const val PREFERENCES = ""
-//    fun getIdFromUrl(url: String): Int {
-//        val index = url.lastIndexOf('/')
-//        return url.substring(index + 1).toInt()
-//    }
-//}
+/**
+ * Constants values.
+ *
+ * @constructor Create empty Constants
+ */
+object Constants {
+    const val homeScreen = "home_screen"
+    const val TAG = "Logger"
+    const val idDefault = 999
+    const val PREFERENCES = ""
+
+    /**
+     * Get id from url if needed.
+     *
+     * @param url
+     * @return
+     */
+    fun getIdFromUrl(url: String): Int {
+        val index = url.lastIndexOf('/')
+        return url.substring(index + 1).toInt()
+    }
+}

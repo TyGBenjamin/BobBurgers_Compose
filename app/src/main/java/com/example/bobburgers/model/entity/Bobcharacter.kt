@@ -1,7 +1,22 @@
 package com.example.bobburgers.model.entity
 
-import com.example.bobburgers.model.dto.RelativeDTO
-
+/**
+ * Bobcharacter data class.
+ *
+ * @property age
+ * @property firstEpisode
+ * @property gender
+ * @property hairColor
+ * @property id
+ * @property image
+ * @property name
+ * @property occupation
+ * @property relatives
+ * @property url
+ * @property voicedBy
+ * @property wikiUrl
+ * @constructor Create empty Bobcharacter
+ */
 data class Bobcharacter(
     val age: String,
     val firstEpisode: String,
@@ -15,6 +30,4 @@ data class Bobcharacter(
     val url: String,
     val voicedBy: String,
     val wikiUrl: String
-
 )
-
