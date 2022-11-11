@@ -98,10 +98,10 @@ fun Navigation(homeState:HomeScreenState) {
     NavHost(navController = navController, startDestination = "home_screen") {
         composable("characters/{id}") {
             val id = it.arguments?.getString("id")
-            id?.let { it1 -> CharCard(id = it1, navigate = {}, character = homeState.characters.get((it1.toInt()))) }
+            id?.let { it1 -> CharCard(id = it1, navigate = {}, character = homeState.characters.get((it1.toInt()-1))) }
             if (id != null) {
                 CharCard(id = id, navigate = {navController.navigate("home_screen")},
-                    character = homeState.characters[(id.toInt()+1)])
+                    character = homeState.characters[(id.toInt()-1)])
 
             }
         }
